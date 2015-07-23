@@ -99,6 +99,22 @@ public class PuzzleView extends View {
 		}
 
 		//ヒントを描画する
+		//残された手の数に基づいてヒントの色を塗る
+		Paint hint = new Paint();
+		int c[] = { getResources().getColor(R.color.puzzle_hint_0),
+				getResources().getColor(R.color.puzzle_hint_1),
+				getResources().getColor(R.color.puzzle_hint_2),};
+		Rect r = new Rect();
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				int movesleft = 9-game.getUsedTiles(i,j).length;
+				if(movesleft < c.length){
+					getRect(i,j,r);
+					hint.setColor(c[movesleft]);
+					canvas.drawRect(r,hint);
+				}
+			}
+		}
 		//選択されたマスを描画する
 		Log.d(TAG,"selRect="+selRect);
 		Paint selected = new Paint();
@@ -123,6 +139,41 @@ public class PuzzleView extends View {
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
 				select(selX+1,selY);
 				break;
+			case KeyEvent.KEYCODE_0:
+			case KeyEvent.KEYCODE_SPACE:
+				setSelectedTile(0);
+				break;
+			case KeyEvent.KEYCODE_1:
+				setSelectedTile(1);
+				break;
+			case KeyEvent.KEYCODE_2:
+				setSelectedTile(2);
+				break;
+			case KeyEvent.KEYCODE_3:
+				setSelectedTile(3);
+				break;
+			case KeyEvent.KEYCODE_4:
+				setSelectedTile(4);
+				break;
+			case KeyEvent.KEYCODE_5:
+				setSelectedTile(5);
+				break;
+			case KeyEvent.KEYCODE_6:
+				setSelectedTile(6);
+				break;
+			case KeyEvent.KEYCODE_7:
+				setSelectedTile(7);
+				break;
+			case KeyEvent.KEYCODE_8:
+				setSelectedTile(8);
+				break;
+			case KeyEvent.KEYCODE_9:
+				setSelectedTile(9);
+				break;
+			case KeyEvent.KEYCODE_ENTER:
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+				game.showKeypadOrError(selX,selY);
+				break;
 			default:
 				return super.onKeyDown(keyCode, event);
 		}
@@ -135,5 +186,24 @@ public class PuzzleView extends View {
 		selY = Math.min(Math.max(y,0),8);
 		getRect(selX,selY,selRect);
 		invalidate(selRect);
+	}
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if(event.getAction() != MotionEvent.ACTION_DOWN)
+			return super.onTouchEvent(event);
+
+		select((int)(event.getX()/width),(int)(event.getY()/height));
+		Log.d(TAG,"onTouchEvent:x"+selX+",y"+selY);
+		return true;
+	}
+
+	public void setSelectedTile(int tile) {
+		if(game.setTileIfVaild(selX,selY,tile)){
+			invalidate(); //ヒントが変わる可能性あり
+		}else{
+			//このマスの数値は選べない値
+			Log.d(TAG,"setSelectedTile:invalid:"+tile);
+			startAnimation(AnimationUtils.loadAnimation(game, R.anim.shake));
+		}
 	}
 }
