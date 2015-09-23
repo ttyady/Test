@@ -3,9 +3,9 @@ package com.example.sudoku;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -86,6 +86,7 @@ public class PuzzleView extends View {
 		foreground.setTextAlign(Paint.Align.CENTER);
 
 		//マス目の中央に数字を描く
+
 		FontMetrics fm = foreground.getFontMetrics();
 		//x軸方向でセンタリングする。中央のx座標にそろえる
 		float x = width /2;
@@ -93,8 +94,8 @@ public class PuzzleView extends View {
 		float y = height/2 - (fm.ascent + fm.descent) /2;
 		for(int i=0; i<9; i++){
 			for(int j=0; j<9; j++){
-				canvas.drawText("1",i*width+x, j*height+y, foreground);
-				//this.game.getTileString(i,j), i*width+x, j*height+y, foreground
+				canvas.drawText(this.game.getTileString(i,j),
+						i*width+x,j*height+y,foreground);
 			}
 		}
 
@@ -198,7 +199,7 @@ public class PuzzleView extends View {
 	}
 
 	public void setSelectedTile(int tile) {
-		if(game.setTileIfVaild(selX,selY,tile)){
+		if(game.setTileIfValid(selX,selY,tile)){
 			invalidate(); //ヒントが変わる可能性あり
 		}else{
 			//このマスの数値は選べない値

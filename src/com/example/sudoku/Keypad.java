@@ -60,6 +60,62 @@ public class Keypad extends Dialog {
 		}});
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode,KeyEvent event){
+		int tile =0;
+		switch (keyCode){
+		case KeyEvent.KEYCODE_0:
+		case KeyEvent.KEYCODE_SPACE:
+			tile = 0;
+			break;
+		case KeyEvent.KEYCODE_1:
+			tile = 1;
+			break;
+		case KeyEvent.KEYCODE_2:
+			tile = 2;
+			break;
+		case KeyEvent.KEYCODE_3:
+			tile = 3;
+			break;
+		case KeyEvent.KEYCODE_4:
+			tile = 4;
+			break;
+		case KeyEvent.KEYCODE_5:
+			tile = 5;
+			break;
+		case KeyEvent.KEYCODE_6:
+			tile = 6;
+			break;
+		case KeyEvent.KEYCODE_7:
+			tile = 7;
+			break;
+		case KeyEvent.KEYCODE_8:
+			tile = 8;
+			break;
+		case KeyEvent.KEYCODE_9:
+			tile = 9;
+			break;
+		default:
+			return super.onKeyDown(keyCode, event);
+		}
+		if(isValid(tile)){
+			returnResult(tile);
+		}
+		return true;
+	}
+
+	private boolean isValid(int tile) {
+		for(int t:useds){
+			if(tile ==t)
+				return false;
+		}
+		return true;
+	}
+
+	private void returnResult(int tile) {
+		puzzleView.setSelectedTile(tile);
+		dismiss();
+	}
 
 	// ........
 }
